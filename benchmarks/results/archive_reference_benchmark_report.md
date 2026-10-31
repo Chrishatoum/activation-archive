@@ -13,6 +13,10 @@ These are preliminary results for two row groups and one machine. The Parquet pa
 
 Newest entries first. Each entry records what was changed or run, the result, and where the raw output is.
 
+### 2026-10-31 — Fixed a version-number collision introduced by the Zarr migration
+
+All four archive kinds in this project (reference, zstd, Quant8, codec) share the same `"format": "gibbon-activation-archive"` string, so the `"version"` integer is the actual discriminator each reader checks — before the Zarr migration these were 1/2/3/4, one per kind, with no overlap. The migration picked 3 (uncompressed reference) and 4 (zstd reference) without checking against the other two readers' hardcoded versions, colliding with `QUANT8_ARCHIVE_VERSION = 3` and `CODEC_ARCHIVE_VERSION = 4` in `python/quantized_archive.py`/`python/codec_archive.py`. Not a silent misread — `QuantizedActivationArchive`/`CodecActivationArchive` would still reject a reference archive at the `"compression"` field check — but a real latent correctness hazard worth closing now rather than leaving for whoever adds a fifth archive kind later. Fixed: `ARCHIVE_VERSION`/`COMPRESSED_ARCHIVE_VERSION` bumped to 5/6, with a comment in the source recording that version numbers must stay globally unique across every reader in the project. The 12 live reference/zstd archives were rebuilt in place and reverified (byte-exact against Parquet, as before); the other 57 archives (Quant8, codec) were untouched since their own version constants didn't change. Test suite updated and passing (11/11).
+
 ### 2026-10-31 — Zarr v3 migrated into the production reference/lossless archive
 
 Acted on the ZARR_EVALUATION.md recommendation: picked Zarr v3 for the reference/lossless tier, kept the current custom format for the lossy tier (Quant8, codec archives) — the usage pattern here is build-once/read-many, where Zarr's read speedup dominates its small build-cost/memory penalty, and porting the lossy tier's calibration/exception metadata onto a plain Zarr array was unplanned work with no measured benefit.

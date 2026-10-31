@@ -31,8 +31,13 @@ from python.load_activations import METADATA_COLUMNS, _binary2_as_uint16
 
 
 ARCHIVE_FORMAT = "gibbon-activation-archive"
-ARCHIVE_VERSION = 3
-COMPRESSED_ARCHIVE_VERSION = 4
+# Versions 1-4 are taken by the pre-Zarr reference/zstd formats and by the
+# lossy archives (QUANT8_ARCHIVE_VERSION=3, CODEC_ARCHIVE_VERSION=4 in
+# quantized_archive.py/codec_archive.py) — all four archive kinds share the
+# "format" string above, so version numbers are the real discriminator and
+# must stay globally unique across every reader in this project.
+ARCHIVE_VERSION = 5
+COMPRESSED_ARCHIVE_VERSION = 6
 ZARR_ARRAY_NAME = "activations.zarr"
 METADATA_FILE = "metadata.npz"
 

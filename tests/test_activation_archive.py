@@ -149,7 +149,7 @@ class ActivationArchiveTests(unittest.TestCase):
 
             compressed_index = compress_archive(raw_path, compressed_path)
             self.assertEqual(compressed_index["compression"], "zstd")
-            self.assertEqual(compressed_index["version"], 4)
+            self.assertEqual(compressed_index["version"], 6)
             self.assertTrue((compressed_path / "activations.zarr").exists())
             compressed_archive = ActivationArchive(compressed_path)
             compressed_archive.verify()
