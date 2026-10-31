@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "token_range",
+  "query": {
+    "round_index": 0,
+    "token_start": 0,
+    "token_stop": 8,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 384,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.01392635015842907,
+    "max_abs_error": 256.0
+  },
+  "selected_activation_sha256": "6a84812b4d1ae429f53062715127d3c51f00cc3df016901f13d36c820ce55b35",
+  "parquet": {
+    "median_read_time_s": 0.7394802076742053,
+    "read_times_s": [
+      0.7169512258842587,
+      0.7615181738510728,
+      0.7722685886546969,
+      0.7334732981398702,
+      0.7394802076742053,
+      0.7686538780108094,
+      0.7162486463785172
+    ],
+    "rows_per_second_at_median": 519.2836752287762,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-bf16trunc-m4",
+    "archive_size_bytes_including_index_and_metadata": 88843006,
+    "median_read_time_s": 0.014713043347001076,
+    "read_times_s": [
+      0.01539166271686554,
+      0.01522714551538229,
+      0.015082526952028275,
+      0.014713043347001076,
+      0.013931211084127426,
+      0.014178995974361897,
+      0.014075194485485554
+    ],
+    "rows_per_second_at_median": 26099.291012982016,
+    "compression": "bf16_trunc_zstd"
+  },
+  "archive_speedup_over_parquet": 50.26018004799339
+}

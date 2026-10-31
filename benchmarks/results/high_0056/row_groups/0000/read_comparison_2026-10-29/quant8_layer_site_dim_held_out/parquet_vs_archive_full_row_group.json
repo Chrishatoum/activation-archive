@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "full_row_group",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 24576,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.006779946356452762,
+    "max_abs_error": 800.0
+  },
+  "selected_activation_sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+  "parquet": {
+    "median_read_time_s": 0.898526381701231,
+    "read_times_s": [
+      0.8994152201339602,
+      0.895751460455358,
+      0.898526381701231,
+      0.788938413374126,
+      0.924613531678915,
+      0.9159976029768586,
+      0.7773452308028936
+    ],
+    "rows_per_second_at_median": 27351.450664663695,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/quant8-matrix/high_0056-rg0-quant8-layer_site_dim-held_out",
+    "archive_size_bytes_including_index_and_metadata": 74389747,
+    "median_read_time_s": 0.12624033447355032,
+    "read_times_s": [
+      0.1313046058639884,
+      0.12624033447355032,
+      0.12481829803436995,
+      0.12369401101022959,
+      0.12574023380875587,
+      0.12813601829111576,
+      0.1271285731345415
+    ],
+    "rows_per_second_at_median": 194676.29028778538,
+    "compression": "quant8_layer_site_dim_affine"
+  },
+  "archive_speedup_over_parquet": 7.117585559704683
+}

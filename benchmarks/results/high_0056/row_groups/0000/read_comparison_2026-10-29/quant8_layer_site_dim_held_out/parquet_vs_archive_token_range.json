@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "token_range",
+  "query": {
+    "round_index": 0,
+    "token_start": 0,
+    "token_stop": 8,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 384,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.005995929728338969,
+    "max_abs_error": 176.0
+  },
+  "selected_activation_sha256": "6a84812b4d1ae429f53062715127d3c51f00cc3df016901f13d36c820ce55b35",
+  "parquet": {
+    "median_read_time_s": 0.7291227905079722,
+    "read_times_s": [
+      0.7244791761040688,
+      0.7286353465169668,
+      0.7803804110735655,
+      0.7167860120534897,
+      0.7291227905079722,
+      0.7575419209897518,
+      0.7299391459673643
+    ],
+    "rows_per_second_at_median": 526.660262165816,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/quant8-matrix/high_0056-rg0-quant8-layer_site_dim-held_out",
+    "archive_size_bytes_including_index_and_metadata": 74389747,
+    "median_read_time_s": 0.008883117698132992,
+    "read_times_s": [
+      0.009384946897625923,
+      0.008883117698132992,
+      0.008579857647418976,
+      0.009048258885741234,
+      0.008829200640320778,
+      0.008951226249337196,
+      0.008840220980346203
+    ],
+    "rows_per_second_at_median": 43228.06620931153,
+    "compression": "quant8_layer_site_dim_affine"
+  },
+  "archive_speedup_over_parquet": 82.07960485103283
+}

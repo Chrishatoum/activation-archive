@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "single_layer",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": 11,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 1024,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.005587762628011955,
+    "max_abs_error": 0.24404430389404297
+  },
+  "selected_activation_sha256": "75fbb975b28df4712d3696bdb315cfee5b18a09e8b00b7322012e361b10607e3",
+  "parquet": {
+    "median_read_time_s": 0.8351616021245718,
+    "read_times_s": [
+      0.7719949008896947,
+      0.8708243044093251,
+      1.479373449459672,
+      0.8351616021245718,
+      0.7738188961520791,
+      0.8404128216207027,
+      0.7825049171224236
+    ],
+    "rows_per_second_at_median": 1226.110009601784,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-sz3-tol0.01",
+    "archive_size_bytes_including_index_and_metadata": 64560001,
+    "median_read_time_s": 0.03822048380970955,
+    "read_times_s": [
+      0.03798767738044262,
+      0.03938385285437107,
+      0.03942066617310047,
+      0.03822048380970955,
+      0.03831480909138918,
+      0.037510969676077366,
+      0.037463603541255
+    ],
+    "rows_per_second_at_median": 26791.916216922993,
+    "compression": "sz3_abs_rms"
+  },
+  "archive_speedup_over_parquet": 21.85115202315694
+}

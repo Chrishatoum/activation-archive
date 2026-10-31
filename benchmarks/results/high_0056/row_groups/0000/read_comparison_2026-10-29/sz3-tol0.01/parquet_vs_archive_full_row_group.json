@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "full_row_group",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 24576,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.005650080937913872,
+    "max_abs_error": 6.256233215332031
+  },
+  "selected_activation_sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+  "parquet": {
+    "median_read_time_s": 0.9295326415449381,
+    "read_times_s": [
+      0.9505824754014611,
+      0.9410934215411544,
+      0.9295326415449381,
+      0.7930169217288494,
+      0.9139746325090528,
+      0.973948061466217,
+      0.8279006006196141
+    ],
+    "rows_per_second_at_median": 26439.093046967388,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-sz3-tol0.01",
+    "archive_size_bytes_including_index_and_metadata": 64560001,
+    "median_read_time_s": 0.47966433968394995,
+    "read_times_s": [
+      0.4935613442212343,
+      0.5077797053381801,
+      0.5015182085335255,
+      0.46664080396294594,
+      0.475701411254704,
+      0.47966433968394995,
+      0.4612016025930643
+    ],
+    "rows_per_second_at_median": 51235.828821865485,
+    "compression": "sz3_abs_rms"
+  },
+  "archive_speedup_over_parquet": 1.9378814821994181
+}

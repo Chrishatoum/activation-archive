@@ -1,0 +1,27 @@
+name: gibbon-activation-pilot
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - pyarrow
+  - zstandard
+  - zfpy=1.0.1
+  - zarr>=3
+  - pytest
+  - pytorch
+  - pytorch-cuda=12.4
+  - r-base=4.4
+  - r-arrow
+  - r-dplyr
+  - r-ggplot2
+  - r-jsonlite
+  - r-knitr
+  - r-rmarkdown
+  - r-tidyr
+  - pip
+  - pip:
+      - pysz==1.1.0

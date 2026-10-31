@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "full_row_group",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 24576,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.013777531197354455,
+    "max_abs_error": 256.0
+  },
+  "selected_activation_sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+  "parquet": {
+    "median_read_time_s": 0.894608330912888,
+    "read_times_s": [
+      0.9186546020209789,
+      0.894608330912888,
+      0.9085547467693686,
+      0.7905482444912195,
+      0.8808740573003888,
+      0.9218624224886298,
+      0.8100738041102886
+    ],
+    "rows_per_second_at_median": 27471.239816112415,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-bf16trunc-m4",
+    "archive_size_bytes_including_index_and_metadata": 88843006,
+    "median_read_time_s": 0.21703103743493557,
+    "read_times_s": [
+      0.21863543149083853,
+      0.21455291379243135,
+      0.21092508640140295,
+      0.2229930767789483,
+      0.21929251216351986,
+      0.21703103743493557,
+      0.21492417063564062
+    ],
+    "rows_per_second_at_median": 113237.25993508057,
+    "compression": "bf16_trunc_zstd"
+  },
+  "archive_speedup_over_parquet": 4.122029464016572
+}

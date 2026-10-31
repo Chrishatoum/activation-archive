@@ -1,0 +1,54 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "token_range",
+  "query": {
+    "round_index": 0,
+    "token_start": 0,
+    "token_stop": 8,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 384,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": true,
+  "selected_activation_sha256": "6a84812b4d1ae429f53062715127d3c51f00cc3df016901f13d36c820ce55b35",
+  "parquet": {
+    "median_read_time_s": 0.7051489502191544,
+    "read_times_s": [
+      0.7051489502191544,
+      0.7032850813120604,
+      0.7452000556513667,
+      0.6938582705333829,
+      0.6975915851071477,
+      0.7493791850283742,
+      0.7213603295385838
+    ],
+    "rows_per_second_at_median": 544.5657968868223,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/high_0056-rg0-reference-v1",
+    "archive_size_bytes_including_index_and_metadata": 144058127,
+    "median_read_time_s": 0.007509341463446617,
+    "read_times_s": [
+      0.007644989527761936,
+      0.007423237897455692,
+      0.007337276823818684,
+      0.007366443984210491,
+      0.007509341463446617,
+      0.007756575010716915,
+      0.007565525360405445
+    ],
+    "rows_per_second_at_median": 51136.30827273005,
+    "compression": "none"
+  },
+  "archive_speedup_over_parquet": 93.90290129322565
+}

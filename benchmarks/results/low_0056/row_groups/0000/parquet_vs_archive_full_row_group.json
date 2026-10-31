@@ -1,0 +1,54 @@
+{
+  "game_id": "low_0056",
+  "row_group": 0,
+  "query_name": "full_row_group",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 1392,
+  "rows_returned": 1392,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": true,
+  "selected_activation_sha256": "f659c5dad5a07637687286d2d9e2e983d5011c7b0f6489843a28f8e4fb6a598d",
+  "parquet": {
+    "median_read_time_s": 0.07859273813664913,
+    "read_times_s": [
+      0.07740004919469357,
+      0.08427926618605852,
+      0.08355212863534689,
+      0.0755208469927311,
+      0.07299042120575905,
+      0.08251658361405134,
+      0.07859273813664913
+    ],
+    "rows_per_second_at_median": 17711.560037261086,
+    "row_group_compressed_bytes": 10691808,
+    "row_group_uncompressed_bytes": 11447554
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/low_0056-rg0-reference-v1-validation",
+    "archive_size_bytes_including_index_and_metadata": 8162645,
+    "median_read_time_s": 0.003926669247448444,
+    "read_times_s": [
+      0.004119531251490116,
+      0.003911074250936508,
+      0.004054956138134003,
+      0.003885333426296711,
+      0.0039970120415091515,
+      0.00389818474650383,
+      0.003926669247448444
+    ],
+    "rows_per_second_at_median": 354498.918110947,
+    "compression": "none"
+  },
+  "archive_speedup_over_parquet": 20.01511540288727
+}

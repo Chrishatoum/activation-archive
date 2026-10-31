@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "token_range",
+  "query": {
+    "round_index": 0,
+    "token_start": 0,
+    "token_stop": 8,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 384,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.02589259650791021,
+    "max_abs_error": 416.0
+  },
+  "selected_activation_sha256": "6a84812b4d1ae429f53062715127d3c51f00cc3df016901f13d36c820ce55b35",
+  "parquet": {
+    "median_read_time_s": 0.7810470210388303,
+    "read_times_s": [
+      0.709527937695384,
+      0.7062024725601077,
+      0.8148782532662153,
+      0.7810470210388303,
+      0.7829139092937112,
+      0.9597201598808169,
+      0.7208569692447782
+    ],
+    "rows_per_second_at_median": 491.6477365079268,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-fp8e4m3",
+    "archive_size_bytes_including_index_and_metadata": 73473066,
+    "median_read_time_s": 0.01654751878231764,
+    "read_times_s": [
+      0.01654751878231764,
+      0.01649716217070818,
+      0.017123838886618614,
+      0.016820346005260944,
+      0.016568266786634922,
+      0.01654055342078209,
+      0.016443793661892414
+    ],
+    "rows_per_second_at_median": 23205.896004803755,
+    "compression": "fp8_e4m3_block_scale"
+  },
+  "archive_speedup_over_parquet": 47.200249857002255
+}

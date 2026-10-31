@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "token_range",
+  "query": {
+    "round_index": 0,
+    "token_start": 0,
+    "token_stop": 8,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 384,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.05995244059380627,
+    "max_abs_error": 49.443359375
+  },
+  "selected_activation_sha256": "6a84812b4d1ae429f53062715127d3c51f00cc3df016901f13d36c820ce55b35",
+  "parquet": {
+    "median_read_time_s": 0.7257432444021106,
+    "read_times_s": [
+      0.7157652247697115,
+      0.740278304554522,
+      0.7613496286794543,
+      0.7257432444021106,
+      0.7251371257007122,
+      0.7684575691819191,
+      0.7205858696252108
+    ],
+    "rows_per_second_at_median": 529.11274470953,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/high_0056-rg0-quant8-layersite-v1",
+    "archive_size_bytes_including_index_and_metadata": 73283493,
+    "median_read_time_s": 0.008653339929878712,
+    "read_times_s": [
+      0.00897718034684658,
+      0.008653339929878712,
+      0.008416548371315002,
+      0.008491181768476963,
+      0.009013362228870392,
+      0.009122787974774837,
+      0.008544212207198143
+    ],
+    "rows_per_second_at_median": 44375.929191699084,
+    "compression": "quant8_layer_site_affine"
+  },
+  "archive_speedup_over_parquet": 83.86856985661984
+}

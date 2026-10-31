@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "full_row_group",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 24576,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.18235088977709688,
+    "max_abs_error": 49.8193359375
+  },
+  "selected_activation_sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+  "parquet": {
+    "median_read_time_s": 1.2345084259286523,
+    "read_times_s": [
+      1.5551223689690232,
+      0.9103854158893228,
+      1.2122327582910657,
+      1.4685394177213311,
+      0.9038864187896252,
+      1.3294309452176094,
+      1.2345084259286523
+    ],
+    "rows_per_second_at_median": 19907.519044686014,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/high_0056-rg0-quant8-v1",
+    "archive_size_bytes_including_index_and_metadata": 73279211,
+    "median_read_time_s": 0.10185561422258615,
+    "read_times_s": [
+      0.5704328147694468,
+      0.09932030458003283,
+      0.1019897311925888,
+      0.09676149860024452,
+      0.09729398414492607,
+      0.10185561422258615,
+      0.10271709319204092
+    ],
+    "rows_per_second_at_median": 241282.72346670853,
+    "compression": "quant8_global_affine"
+  },
+  "archive_speedup_over_parquet": 12.12018046674254
+}

@@ -1,0 +1,149 @@
+{
+  "reference_archive": "/home/chris/gibbon-work/archives/high_0056-rg0-reference-v1",
+  "build": {
+    "format": "zarr_v3_evaluation_prototype",
+    "game_id": "high_0056",
+    "rows": 24576,
+    "dimensions": 2880,
+    "chunk_rows": 256,
+    "shard_rows": 1024,
+    "zstd_level": 3,
+    "write_time_s": 0.17948923353105783,
+    "activations_sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+    "archive_size_bytes": 118276111
+  },
+  "queries": [
+    {
+      "query_name": "full_row_group",
+      "query": {
+        "round_index": null,
+        "token_start": null,
+        "token_stop": null,
+        "layer": null,
+        "activation_site": null
+      },
+      "rows_returned": 24576,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        1.1188900312408805,
+        1.1650100396946073,
+        1.1596762845292687
+      ],
+      "cold_median_read_time_s": 1.1596762845292687,
+      "median_read_time_s": 1.098456003703177,
+      "read_times_s": [
+        1.1049724575132132,
+        1.0796374222263694,
+        1.098456003703177,
+        1.0609287489205599,
+        1.0995937259867787,
+        1.099723620340228,
+        1.0886893440037966
+      ]
+    },
+    {
+      "query_name": "token_range",
+      "query": {
+        "round_index": 0,
+        "token_start": 0,
+        "token_stop": 8,
+        "layer": null,
+        "activation_site": null
+      },
+      "rows_returned": 384,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        0.019267561845481396,
+        0.01958849746733904,
+        0.018805624917149544
+      ],
+      "cold_median_read_time_s": 0.019267561845481396,
+      "median_read_time_s": 0.01762059610337019,
+      "read_times_s": [
+        0.017346450127661228,
+        0.01762059610337019,
+        0.01880792621523142,
+        0.021487794816493988,
+        0.019424045458436012,
+        0.017298288643360138,
+        0.01740768551826477
+      ]
+    },
+    {
+      "query_name": "single_layer",
+      "query": {
+        "round_index": null,
+        "token_start": null,
+        "token_stop": null,
+        "layer": 11,
+        "activation_site": null
+      },
+      "rows_returned": 1024,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        0.07310231868177652,
+        0.06654545105993748,
+        0.06765771936625242
+      ],
+      "cold_median_read_time_s": 0.06765771936625242,
+      "median_read_time_s": 0.0680877985432744,
+      "read_times_s": [
+        0.06749541778117418,
+        0.0677177831530571,
+        0.07480637263506651,
+        0.0680877985432744,
+        0.06808162201195955,
+        0.06883169151842594,
+        0.06961638014763594
+      ]
+    },
+    {
+      "query_name": "layer_token_range",
+      "query": {
+        "round_index": 0,
+        "token_start": 0,
+        "token_stop": 8,
+        "layer": 11,
+        "activation_site": null
+      },
+      "rows_returned": 16,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        0.0059305718168616295,
+        0.004886636510491371,
+        0.005264408886432648
+      ],
+      "cold_median_read_time_s": 0.005264408886432648,
+      "median_read_time_s": 0.0031933365389704704,
+      "read_times_s": [
+        0.0031933365389704704,
+        0.003261593170464039,
+        0.003179628401994705,
+        0.0034607788547873497,
+        0.0032235970720648766,
+        0.003166157752275467,
+        0.0031909728422760963
+      ]
+    }
+  ],
+  "environment": {
+    "timestamp_utc": "2026-10-31T11:45:12.734103+00:00",
+    "hostname": "ramiel",
+    "platform": "Linux-6.11.0-25-generic-x86_64-with-glibc2.39",
+    "conda_env": "gibbon-activation-pilot",
+    "python_version": "3.11.17",
+    "package_versions": {
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "pyarrow": "25.0.0",
+      "zstandard": "0.25.0",
+      "torch": "2.5.1",
+      "zfpy": "1.0.1",
+      "pysz": "1.1.0"
+    },
+    "gpu": {
+      "available": true,
+      "name": "NVIDIA GeForce RTX 4090"
+    }
+  }
+}

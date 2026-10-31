@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "token_range",
+  "query": {
+    "round_index": 0,
+    "token_start": 0,
+    "token_stop": 8,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 384,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.018477898481734124,
+    "max_abs_error": 16.36461639404297
+  },
+  "selected_activation_sha256": "6a84812b4d1ae429f53062715127d3c51f00cc3df016901f13d36c820ce55b35",
+  "parquet": {
+    "median_read_time_s": 0.7298093223944306,
+    "read_times_s": [
+      0.7298093223944306,
+      0.7291933419182897,
+      0.7840310037136078,
+      0.7222891775891185,
+      0.7332012336701155,
+      0.7781559564173222,
+      0.7238337220624089
+    ],
+    "rows_per_second_at_median": 526.1648326718201,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-sz3-tol0.03",
+    "archive_size_bytes_including_index_and_metadata": 50368325,
+    "median_read_time_s": 0.025789817795157433,
+    "read_times_s": [
+      0.025789817795157433,
+      0.03134264796972275,
+      0.025307311676442623,
+      0.025929709896445274,
+      0.025410909205675125,
+      0.02549318689852953,
+      0.025998106226325035
+    ],
+    "rows_per_second_at_median": 14889.597245316865,
+    "compression": "sz3_abs_rms"
+  },
+  "archive_speedup_over_parquet": 28.298351240444486
+}

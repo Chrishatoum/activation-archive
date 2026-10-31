@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "single_layer",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": 11,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 1024,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.011492457084518654,
+    "max_abs_error": 15.0
+  },
+  "selected_activation_sha256": "75fbb975b28df4712d3696bdb315cfee5b18a09e8b00b7322012e361b10607e3",
+  "parquet": {
+    "median_read_time_s": 0.7449492895975709,
+    "read_times_s": [
+      0.7254950506612659,
+      0.8444268144667149,
+      1.327102543786168,
+      0.7153993509709835,
+      0.7449492895975709,
+      0.8698567422106862,
+      0.7394454749301076
+    ],
+    "rows_per_second_at_median": 1374.5902094264363,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-zfp-rate8",
+    "archive_size_bytes_including_index_and_metadata": 82296114,
+    "median_read_time_s": 0.06180613208562136,
+    "read_times_s": [
+      0.06354441959410906,
+      0.06180613208562136,
+      0.05956524144858122,
+      0.05973871797323227,
+      0.06980083230882883,
+      0.06288769282400608,
+      0.05965807382017374
+    ],
+    "rows_per_second_at_median": 16567.935339837008,
+    "compression": "zfp_fixed_rate"
+  },
+  "archive_speedup_over_parquet": 12.052999669443425
+}

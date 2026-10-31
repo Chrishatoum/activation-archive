@@ -1,0 +1,31 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "rows": 24576,
+  "dimensions": 2880,
+  "activation_bytes": 141557760,
+  "metadata_fields": [
+    "activation_site",
+    "game_id",
+    "layer",
+    "round",
+    "token_idx"
+  ],
+  "read_time_s": 1.3591422527097166,
+  "rows_per_second": 18081.99248533619,
+  "activation_mib_per_second": 99.32735129884384,
+  "host_memory": {
+    "baseline_rss_bytes": 85131264,
+    "process_peak_rss_bytes": 1179455488,
+    "baseline_process_peak_rss_bytes": 85131264,
+    "new_high_water_bytes_during_load": 1094324224,
+    "measurement_note": "Process peak RSS includes Python and imported libraries; new_high_water is the increase above the pre-load high-water mark."
+  },
+  "gpu_memory": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "transfer_time_s": 0.05905925016850233,
+    "peak_allocated_bytes": 142606336,
+    "peak_reserved_bytes": 142606336
+  },
+  "data_root": "/srv/gibbon-activations/gpt_oss_pilot_3games"
+}

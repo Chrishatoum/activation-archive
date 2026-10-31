@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "single_layer",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": 11,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 1024,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.0,
+    "max_abs_error": 0.0
+  },
+  "selected_activation_sha256": "75fbb975b28df4712d3696bdb315cfee5b18a09e8b00b7322012e361b10607e3",
+  "parquet": {
+    "median_read_time_s": 0.9266956718638539,
+    "read_times_s": [
+      0.7966636847704649,
+      0.9290636805817485,
+      1.6172334225848317,
+      0.9266956718638539,
+      0.8484804881736636,
+      0.9896621499210596,
+      0.7833226257935166
+    ],
+    "rows_per_second_at_median": 1105.0013840470829,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-bf16trunc-m7",
+    "archive_size_bytes_including_index_and_metadata": 114348754,
+    "median_read_time_s": 0.028147215954959393,
+    "read_times_s": [
+      0.028353940695524216,
+      0.028757181949913502,
+      0.028789558447897434,
+      0.0275967326015234,
+      0.027986273169517517,
+      0.028147215954959393,
+      0.02706084679812193
+    ],
+    "rows_per_second_at_median": 36380.15218409466,
+    "compression": "bf16_trunc_zstd"
+  },
+  "archive_speedup_over_parquet": 32.923173408934424
+}

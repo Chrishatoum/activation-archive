@@ -1,0 +1,35 @@
+{
+  "method": "quant8",
+  "game_id": "high_0056",
+  "row_group": 0,
+  "rows": 24576,
+  "dimensions": 2880,
+  "data_root": "/srv/gibbon-activations/gpt_oss_pilot_3games",
+  "raw_size_bytes": 141557760,
+  "encoded_size_bytes": 70778896,
+  "compression_ratio": 0.5000001130280671,
+  "read_time_s": 0.9498098352923989,
+  "encode_time_s": 1.5452865632250905,
+  "decode_time_s": 0.1289105862379074,
+  "rows_per_second": 25874.653100885484,
+  "relative_frobenius_error": 0.1823491055064319,
+  "max_abs_error": 49.81960784313742,
+  "sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+  "roundtrip_exact": false,
+  "lossless": false,
+  "lossy": true,
+  "metadata_fields": [
+    "activation_site",
+    "game_id",
+    "layer",
+    "round",
+    "token_idx"
+  ],
+  "method_params": {
+    "quantization": "global_affine_minmax",
+    "bits_per_value": 8,
+    "minimum": -12288.0,
+    "scale": 99.63921568627451,
+    "parameter_bytes": 16
+  }
+}

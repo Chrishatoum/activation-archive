@@ -1,0 +1,91 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "single_layer",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": 11,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 1024,
+  "dimensions": 2880,
+  "iterations": 7,
+  "cold_trials": 3,
+  "timing_mode": "cold: posix_fadvise(DONTNEED) eviction immediately before each single read, one trial per measurement; warm: one discarded warm-up followed by repeated reads with no deliberate eviction. Cold eviction is best-effort and may be a no-op on some filesystems (see archive/parquet cold_read_times_s).",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.004744507327741805,
+    "max_abs_error": 1.5255126953125
+  },
+  "selected_activation_sha256": "75fbb975b28df4712d3696bdb315cfee5b18a09e8b00b7322012e361b10607e3",
+  "parquet": {
+    "cold_read_times_s": [
+      0.7967323157936335,
+      0.7830965621396899,
+      0.7747796326875687
+    ],
+    "cold_median_read_time_s": 0.7830965621396899,
+    "median_read_time_s": 0.8088175933808088,
+    "read_times_s": [
+      0.7029855037108064,
+      0.7441280288621783,
+      0.7107557710260153,
+      0.8088175933808088,
+      0.9035826670005918,
+      0.8387824343517423,
+      0.9310443131253123
+    ],
+    "rows_per_second_at_median": 1266.0456552629396,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/quant8-matrix/high_0056-rg0000-quant8-layer_site_dim-held_out-exceptions",
+    "archive_size_bytes_including_index_and_metadata": 75060455,
+    "cold_read_times_s": [
+      0.11076389905065298,
+      0.10659526940435171,
+      0.10445424728095531
+    ],
+    "cold_median_read_time_s": 0.10659526940435171,
+    "median_read_time_s": 0.023233887739479542,
+    "read_times_s": [
+      0.07714910991489887,
+      0.0232562068849802,
+      0.02300840150564909,
+      0.02296324633061886,
+      0.02357850782573223,
+      0.023233887739479542,
+      0.023035742342472076
+    ],
+    "rows_per_second_at_median": 44073.55374537669,
+    "compression": "quant8_layer_site_dim_affine"
+  },
+  "archive_speedup_over_parquet": 34.81197819538604,
+  "environment": {
+    "timestamp_utc": "2026-10-30T12:07:02.982418+00:00",
+    "hostname": "ramiel",
+    "platform": "Linux-6.11.0-25-generic-x86_64-with-glibc2.39",
+    "conda_env": "gibbon-activation-pilot",
+    "python_version": "3.11.17",
+    "package_versions": {
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "pyarrow": "25.0.0",
+      "zstandard": "0.25.0",
+      "torch": "2.5.1",
+      "zfpy": "1.0.1",
+      "pysz": "1.1.0"
+    },
+    "gpu": {
+      "available": true,
+      "name": "NVIDIA GeForce RTX 4090"
+    }
+  }
+}

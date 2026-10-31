@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "full_row_group",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 24576,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.026126593473657977,
+    "max_abs_error": 466.2861328125
+  },
+  "selected_activation_sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+  "parquet": {
+    "median_read_time_s": 0.8802167642861605,
+    "read_times_s": [
+      0.8687347397208214,
+      0.935868252068758,
+      0.7689341176301241,
+      0.8802167642861605,
+      0.9239899944514036,
+      0.7682499121874571,
+      0.8916156105697155
+    ],
+    "rows_per_second_at_median": 27920.395290279073,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-fp8e4m3",
+    "archive_size_bytes_including_index_and_metadata": 73473066,
+    "median_read_time_s": 0.2564794709905982,
+    "read_times_s": [
+      0.2564794709905982,
+      0.25192194897681475,
+      0.25790755543857813,
+      0.2951933881267905,
+      0.2615596270188689,
+      0.2504868684336543,
+      0.2508102944120765
+    ],
+    "rows_per_second_at_median": 95820.53450547271,
+    "compression": "fp8_e4m3_block_scale"
+  },
+  "archive_speedup_over_parquet": 3.4319189792715483
+}

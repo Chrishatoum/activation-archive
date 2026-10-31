@@ -1,0 +1,149 @@
+{
+  "reference_archive": "/home/chris/gibbon-work/archives/high_0056-rg212-reference-v1",
+  "build": {
+    "format": "zarr_v3_evaluation_prototype",
+    "game_id": "high_0056",
+    "rows": 21456,
+    "dimensions": 2880,
+    "chunk_rows": 1024,
+    "shard_rows": 1024,
+    "zstd_level": 3,
+    "write_time_s": 0.4792630886659026,
+    "activations_sha256": "31575d13678e91907e085d088e8ce146079228eae76954adb939aef69e0ec569",
+    "archive_size_bytes": 103370913
+  },
+  "queries": [
+    {
+      "query_name": "full_row_group",
+      "query": {
+        "round_index": null,
+        "token_start": null,
+        "token_stop": null,
+        "layer": null,
+        "activation_site": null
+      },
+      "rows_returned": 21456,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        0.07088751345872879,
+        0.08278992865234613,
+        0.07652436010539532
+      ],
+      "cold_median_read_time_s": 0.07652436010539532,
+      "median_read_time_s": 0.06863921135663986,
+      "read_times_s": [
+        0.0688324049115181,
+        0.06441335752606392,
+        0.06849540770053864,
+        0.06863921135663986,
+        0.06590247061103582,
+        0.0706168795004487,
+        0.07109918165951967
+      ]
+    },
+    {
+      "query_name": "token_range",
+      "query": {
+        "round_index": 15,
+        "token_start": 1024,
+        "token_stop": 1032,
+        "layer": null,
+        "activation_site": null
+      },
+      "rows_returned": 384,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        0.008572051301598549,
+        0.007989069446921349,
+        0.008045922964811325
+      ],
+      "cold_median_read_time_s": 0.008045922964811325,
+      "median_read_time_s": 0.0061667123809456825,
+      "read_times_s": [
+        0.0061667123809456825,
+        0.006227167323231697,
+        0.006219010800123215,
+        0.00627371110022068,
+        0.005848799832165241,
+        0.006001092493534088,
+        0.006067966111004353
+      ]
+    },
+    {
+      "query_name": "single_layer",
+      "query": {
+        "round_index": null,
+        "token_start": null,
+        "token_stop": null,
+        "layer": 11,
+        "activation_site": null
+      },
+      "rows_returned": 894,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        0.07019218150526285,
+        0.06216616649180651,
+        0.0635547460988164
+      ],
+      "cold_median_read_time_s": 0.0635547460988164,
+      "median_read_time_s": 0.0617015827447176,
+      "read_times_s": [
+        0.06166477221995592,
+        0.059862295165658,
+        0.0617015827447176,
+        0.05967419967055321,
+        0.06346017401665449,
+        0.061920865438878536,
+        0.062092481181025505
+      ]
+    },
+    {
+      "query_name": "layer_token_range",
+      "query": {
+        "round_index": 15,
+        "token_start": 1024,
+        "token_stop": 1032,
+        "layer": 11,
+        "activation_site": null
+      },
+      "rows_returned": 16,
+      "roundtrip_exact": true,
+      "cold_read_times_s": [
+        0.008721892721951008,
+        0.009575859643518925,
+        0.008494875393807888
+      ],
+      "cold_median_read_time_s": 0.008721892721951008,
+      "median_read_time_s": 0.00687028281390667,
+      "read_times_s": [
+        0.007009449414908886,
+        0.00687028281390667,
+        0.006750845350325108,
+        0.0071494681760668755,
+        0.006935029290616512,
+        0.006789632141590118,
+        0.006700791418552399
+      ]
+    }
+  ],
+  "environment": {
+    "timestamp_utc": "2026-10-31T12:01:50.464106+00:00",
+    "hostname": "ramiel",
+    "platform": "Linux-6.11.0-25-generic-x86_64-with-glibc2.39",
+    "conda_env": "gibbon-activation-pilot",
+    "python_version": "3.11.17",
+    "package_versions": {
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "pyarrow": "25.0.0",
+      "zstandard": "0.25.0",
+      "torch": "2.5.1",
+      "zfpy": "1.0.1",
+      "pysz": "1.1.0"
+    },
+    "gpu": {
+      "available": true,
+      "name": "NVIDIA GeForce RTX 4090"
+    }
+  }
+}

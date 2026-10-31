@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "full_row_group",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": null,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 24576,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.05439506043853041,
+    "max_abs_error": 49.443359375
+  },
+  "selected_activation_sha256": "5605ea54f67f9a20834827de9fd15b3dace9968443cdb09692934b5fb3203efa",
+  "parquet": {
+    "median_read_time_s": 1.2389642018824816,
+    "read_times_s": [
+      1.5209849802777171,
+      0.9247966427356005,
+      1.2596294088289142,
+      1.38676334079355,
+      0.910068322904408,
+      1.2389642018824816,
+      1.1425840118899941
+    ],
+    "rows_per_second_at_median": 19835.92420399172,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/high_0056-rg0-quant8-layersite-v1",
+    "archive_size_bytes_including_index_and_metadata": 73283493,
+    "median_read_time_s": 0.103211410343647,
+    "read_times_s": [
+      0.5682398555800319,
+      0.10310057271271944,
+      0.1061768215149641,
+      0.103211410343647,
+      0.10438663512468338,
+      0.10199774242937565,
+      0.10240428801625967
+    ],
+    "rows_per_second_at_median": 238113.20781465064,
+    "compression": "quant8_layer_site_affine"
+  },
+  "archive_speedup_over_parquet": 12.004139830637861
+}

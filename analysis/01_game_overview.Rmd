@@ -1,0 +1,161 @@
+---
+title: "Gibbon pilot: one complete game"
+output:
+  html_document:
+    toc: true
+params:
+  game_id: "low_0056"
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+library(arrow)
+library(dplyr)
+library(ggplot2)
+library(jsonlite)
+library(knitr)
+library(tidyr)
+
+data_root <- Sys.getenv(
+  "GIBBON_DATA_ROOT",
+  unset = "/srv/gibbon-activations/gpt_oss_pilot_3games"
+)
+selected_game_id <- params$game_id
+stopifnot(selected_game_id %in% c("high_0056", "low_0056", "high_0066"))
+
+log_path <- file.path(data_root, "logs", paste0(selected_game_id, ".json"))
+activation_path <- file.path(
+  data_root, "activations", paste0(selected_game_id, "_attempt_000.parquet")
+)
+stopifnot(file.exists(log_path), file.exists(activation_path))
+
+game <- read_json(log_path, simplifyVector = FALSE)
+cues <- unlist(game$all_cues)
+```
+
+## Game summary
+
+```{r game-summary}
+summary_table <- tibble(
+  game_id = game$game_id,
+  reasoning_effort = game$reasoning_effort,
+  correct_cue = game$correct_cue,
+  final_choice = game$final_decision$choice,
+  success = game$success,
+  activation_rows = game$activation_rows,
+  layers = game$num_layers,
+  hidden_size = game$hidden_size
+)
+kable(summary_table)
+```
+
+## Evidence stream and availability mask
+
+Every row below is one evidence round. Round numbers are displayed as 1–15,
+while the stored JSON uses 0–14.
+
+```{r round-data}
+rounds <- bind_rows(lapply(game$rounds, function(x) {
+  available <- unlist(x$available_cues)
+  tibble(
+    round = x$round + 1L,
+    choice = x$choice,
+    observed_color = x$observed_color,
+    available_cues = paste(available, collapse = ", "),
+    n_available = length(available)
+  )
+}))
+kable(rounds)
+```
+
+The panel shows every button in every round. Dark cells are occluded, light
+cells are available but not selected, and the selected cell is colored by the
+observed evidence.
+
+```{r game-panel, fig.width=7, fig.height=8}
+panel <- bind_rows(lapply(game$rounds, function(x) {
+  available <- unlist(x$available_cues)
+  tibble(
+    round = x$round + 1L,
+    cue = cues,
+    is_available = cues %in% available,
+    is_selected = cues == x$choice,
+    observed_color = x$observed_color
+  )
+})) %>%
+  mutate(
+    state = case_when(
+      !is_available ~ "occluded",
+      is_selected & observed_color == "RED" ~ "selected: red",
+      is_selected & observed_color == "GREEN" ~ "selected: green",
+      TRUE ~ "available"
+    ),
+    label = if_else(is_selected, "●", "")
+  )
+
+ggplot(panel, aes(x = cue, y = factor(round, levels = rev(1:15)))) +
+  geom_tile(aes(fill = state), color = "white", linewidth = 1) +
+  geom_text(aes(label = label), color = "white", size = 6) +
+  scale_fill_manual(values = c(
+    "occluded" = "#252525",
+    "available" = "#bdbdbd",
+    "selected: red" = "#d73027",
+    "selected: green" = "#1a9850"
+  )) +
+  labs(x = "Button", y = "Round", fill = NULL) +
+  coord_fixed() +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid = element_blank(), legend.position = "bottom")
+```
+
+## Basic behavioral statistics
+
+```{r behavioral-statistics}
+behavior_stats <- rounds %>%
+  summarise(
+    rounds = n(),
+    red_observations = sum(observed_color == "RED"),
+    green_observations = sum(observed_color == "GREEN"),
+    mean_available_buttons = mean(n_available),
+    distinct_buttons_chosen = n_distinct(choice)
+  )
+kable(behavior_stats)
+
+choice_counts <- rounds %>% count(choice, observed_color, name = "observations")
+kable(choice_counts)
+```
+
+## Activation index statistics
+
+Only the five metadata columns are read here; none of the 2,880 activation
+dimensions are materialized in R.
+
+```{r activation-index}
+activation_index <- read_parquet(
+  activation_path,
+  col_select = c(game_id, round, layer, activation_site, token_idx)
+)
+
+activation_summary <- activation_index %>%
+  summarise(
+    rows = n(),
+    rounds = n_distinct(round),
+    layers = n_distinct(layer),
+    sites = n_distinct(activation_site),
+    token_indices = n_distinct(token_idx)
+  )
+kable(activation_summary)
+
+rows_by_round <- activation_index %>% count(round, activation_site)
+ggplot(rows_by_round, aes(round, n, color = activation_site)) +
+  geom_line(linewidth = 0.8) +
+  geom_point() +
+  scale_color_viridis_d(end = 0.85) +
+  labs(x = "Stored round index", y = "Activation rows", color = "Site") +
+  theme_minimal(base_size = 12)
+```
+
+## Next step
+
+Use `python/load_activations.py` to stream an exact BF16 row group. Keep the
+`uint16` representation when testing a new format so bitwise round trips can
+be verified before numerical analysis.

@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "single_layer",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": 11,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 1024,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": false,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.026514136987311632,
+    "max_abs_error": 32.0
+  },
+  "selected_activation_sha256": "75fbb975b28df4712d3696bdb315cfee5b18a09e8b00b7322012e361b10607e3",
+  "parquet": {
+    "median_read_time_s": 0.8442219952121377,
+    "read_times_s": [
+      0.7220315029844642,
+      0.8331453008577228,
+      0.8992005921900272,
+      0.7809589793905616,
+      0.8442219952121377,
+      0.9091609632596374,
+      1.4464555932208896
+    ],
+    "rows_per_second_at_median": 1212.9511026808623,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/codec-matrix/high_0056-rg0-fp8e4m3",
+    "archive_size_bytes_including_index_and_metadata": 73473066,
+    "median_read_time_s": 0.026272667571902275,
+    "read_times_s": [
+      0.026243142783641815,
+      0.026217342354357243,
+      0.02633265033364296,
+      0.026289855130016804,
+      0.026272667571902275,
+      0.026191468350589275,
+      0.027167709544301033
+    ],
+    "rows_per_second_at_median": 38975.86711351432,
+    "compression": "fp8_e4m3_block_scale"
+  },
+  "archive_speedup_over_parquet": 32.133090136420115
+}

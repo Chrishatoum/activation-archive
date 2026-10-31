@@ -1,0 +1,58 @@
+{
+  "game_id": "high_0056",
+  "row_group": 0,
+  "query_name": "single_layer",
+  "query": {
+    "round_index": null,
+    "token_start": null,
+    "token_stop": null,
+    "layer": 11,
+    "activation_site": null
+  },
+  "rows_in_source_row_group": 24576,
+  "rows_returned": 1024,
+  "dimensions": 2880,
+  "iterations": 7,
+  "timing_mode": "one warm-up followed by repeated warm-cache reads; filesystem cache state is uncontrolled",
+  "timed_work": "read selected rows and return copied activation values plus metadata",
+  "parquet_selection_strategy": "read full Parquet row group with canonical loader, then filter in memory",
+  "archive_selection_strategy": "load chunk metadata, memory-map activation chunks, filter, and copy selected rows",
+  "roundtrip_exact": true,
+  "archive_fidelity": {
+    "relative_frobenius_error": 0.0,
+    "max_abs_error": 0.0
+  },
+  "selected_activation_sha256": "75fbb975b28df4712d3696bdb315cfee5b18a09e8b00b7322012e361b10607e3",
+  "parquet": {
+    "median_read_time_s": 0.7861410127952695,
+    "read_times_s": [
+      0.8523797579109669,
+      0.9933725679293275,
+      1.3851104071363807,
+      0.747285864315927,
+      0.7861410127952695,
+      0.7320826193317771,
+      0.7581331813707948
+    ],
+    "rows_per_second_at_median": 1302.565294690553,
+    "row_group_compressed_bytes": 122668194,
+    "row_group_uncompressed_bytes": 125452919
+  },
+  "archive": {
+    "path": "/home/chris/gibbon-work/archives/high_0056-rg0-zstd-u16-v1",
+    "archive_size_bytes_including_index_and_metadata": 114965099,
+    "median_read_time_s": 0.144378493539989,
+    "read_times_s": [
+      0.146782074123621,
+      0.14797065686434507,
+      0.14273251127451658,
+      0.14628602750599384,
+      0.14199785701930523,
+      0.1398840108886361,
+      0.144378493539989
+    ],
+    "rows_per_second_at_median": 7092.469071346692,
+    "compression": "zstd"
+  },
+  "archive_speedup_over_parquet": 5.445000799773059
+}
