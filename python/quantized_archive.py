@@ -8,6 +8,7 @@ archive itself (in-sample) or on separate calibration archives (held-out).
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
 import shutil
@@ -17,6 +18,7 @@ from pathlib import Path
 from typing import Any, Iterator, Sequence
 
 import numpy as np
+import zstandard
 
 from python.activation_archive import (
     ActivationArchive,
@@ -35,6 +37,38 @@ QUANT8_CODECS = {
 }
 PARAMETERS_FILE = "parameters.npz"
 EXCEPTIONS_FILE = "exceptions.npz"
+PAYLOAD_COMPRESSIONS = ("none", "zstd")
+
+
+def _payload_write(path: Path, data: bytes, payload_compression: str) -> None:
+    """Write an in-memory .npy/.npz payload to disk, zstd-wrapping it if requested.
+
+    Lossless: this only wraps the bytes that `np.save`/`np.savez` already produced.
+    It never touches the quantized values, so it cannot change any fidelity metric.
+    """
+    if payload_compression == "zstd":
+        data = zstandard.ZstdCompressor(level=19).compress(data)
+    path.write_bytes(data)
+
+
+def _payload_read_bytes(path: Path, payload_compression: str) -> bytes:
+    data = path.read_bytes()
+    if payload_compression == "zstd":
+        data = zstandard.ZstdDecompressor().decompress(data)
+    return data
+
+
+def _payload_filename(base_name: str, payload_compression: str) -> str:
+    return f"{base_name}.zst" if payload_compression == "zstd" else base_name
+
+
+def _metadata_bytes(metadata: dict[str, np.ndarray]) -> bytes:
+    safe_metadata = {
+        name: values.astype(str) if values.dtype.kind in "OUS" else values for name, values in metadata.items()
+    }
+    buffer = io.BytesIO()
+    np.savez(buffer, **safe_metadata)
+    return buffer.getvalue()
 
 Groups = dict[str, dict[str, np.ndarray]]
 
@@ -110,19 +144,20 @@ def fit_quant8_groups(archive_paths: Sequence[Path], granularity: str) -> Groups
     return groups
 
 
-def _save_parameters(path: Path, groups: Groups) -> None:
+def _save_parameters(output, groups: Groups) -> None:
+    """Write to any np.savez-compatible target: a Path, or an open file/buffer."""
     keys = sorted(groups)
-    with path.open("wb") as output:
-        np.savez(
-            output,
-            keys=np.array(keys),
-            minimum=np.stack([groups[key]["minimum"] for key in keys]).astype(np.float32),
-            scale=np.stack([groups[key]["scale"] for key in keys]).astype(np.float32),
-        )
+    np.savez(
+        output,
+        keys=np.array(keys),
+        minimum=np.stack([groups[key]["minimum"] for key in keys]).astype(np.float32),
+        scale=np.stack([groups[key]["scale"] for key in keys]).astype(np.float32),
+    )
 
 
-def _load_parameters(path: Path) -> Groups:
-    with np.load(path, allow_pickle=False) as stored:
+def _load_parameters(path: Path, payload_compression: str = "none") -> Groups:
+    source = io.BytesIO(_payload_read_bytes(path, payload_compression)) if payload_compression != "none" else path
+    with np.load(source, allow_pickle=False) as stored:
         return {
             str(key): {"minimum": stored["minimum"][i].astype(np.float64), "scale": stored["scale"][i].astype(np.float64)}
             for i, key in enumerate(stored["keys"])
@@ -137,6 +172,8 @@ def compress_archive_quant8(
     granularity: str = "global",
     calibration_paths: Sequence[Path] | None = None,
     store_clipped_exceptions: bool = False,
+    exception_margin: float = 0.0,
+    payload_compression: str = "none",
 ) -> dict[str, Any]:
     """Quantize an uncompressed reference archive to affine uint8 codes.
 
@@ -149,7 +186,23 @@ def compress_archive_quant8(
     The decoder restores those exact values after dequantizing the clipped uint8
     code, so held-out clipping no longer sets the archive's max absolute error or
     distorts the variance/cosine metrics of the dimensions it falls in.
+
+    ``exception_margin`` narrows which clipped values get an exception entry: a
+    clipped value is only stored if its unclipped code would have landed more
+    than ``exception_margin`` units past the [0, 255] boundary (e.g. ``code=300``
+    has a margin of 45). The default of 0 stores every clipped value, matching
+    the original behavior. Raising it trades some exception-table size back for
+    letting the mildest clips fall back to ordinary quantization error.
+
+    ``payload_compression`` wraps every stored .npy/.npz file in zstd ("zstd") or
+    leaves them as plain NumPy files ("none", the default). This is a separate,
+    fully lossless layer on top of quantization: it cannot change any fidelity
+    metric, only the size on disk, since it losslessly compresses the already-
+    quantized uint8 codes (and metadata/exceptions/parameters) rather than the
+    underlying values.
     """
+    if payload_compression not in PAYLOAD_COMPRESSIONS:
+        raise ValueError(f"Unsupported payload_compression: {payload_compression}")
     if granularity not in QUANT8_CODECS:
         raise ValueError(f"Unsupported Quant8 granularity: {granularity}")
     source = ActivationArchive(source_path)
@@ -201,8 +254,10 @@ def compress_archive_quant8(
                 raw_codes = np.rint((values[rows] - groups[key]["minimum"]) / groups[key]["scale"])
                 clipped_mask = (raw_codes < 0) | (raw_codes > 255)
                 clipped_values += int(np.count_nonzero(clipped_mask))
-                if store_clipped_exceptions and clipped_mask.any():
-                    local_rows, dims = np.nonzero(clipped_mask)
+                clip_margin = np.maximum(-raw_codes, raw_codes - 255)
+                exception_mask = clipped_mask & (clip_margin >= exception_margin)
+                if store_clipped_exceptions and exception_mask.any():
+                    local_rows, dims = np.nonzero(exception_mask)
                     exception_rows.append(rows[local_rows].astype(np.uint32))
                     exception_dims.append(dims.astype(np.uint16))
                     exception_bits.append(source_bits[rows[local_rows], dims])
@@ -211,40 +266,44 @@ def compress_archive_quant8(
                 errors = values[rows] - (group_codes * groups[key]["scale"] + groups[key]["minimum"])
                 if store_clipped_exceptions:
                     # Exceptions restore the exact value on decode, so they contribute no error.
-                    errors = np.where(clipped_mask, 0.0, errors)
+                    errors = np.where(exception_mask, 0.0, errors)
                 squared_error_sum += float(np.square(errors).sum())
                 max_abs_error = max(max_abs_error, float(np.abs(errors).max(initial=0.0)))
             squared_value_sum += float(np.square(values).sum())
 
             chunk_path = temporary_path / chunk_name
             chunk_path.mkdir()
-            code_path = chunk_path / "codes.npy"
-            with code_path.open("wb") as output:
-                np.save(output, codes, allow_pickle=False)
-            metadata_file_name = "metadata.npz"
+            code_file_name = _payload_filename("codes.npy", payload_compression)
+            code_path = chunk_path / code_file_name
+            code_buffer = io.BytesIO()
+            np.save(code_buffer, codes, allow_pickle=False)
+            _payload_write(code_path, code_buffer.getvalue(), payload_compression)
+            metadata_file_name = _payload_filename("metadata.npz", payload_compression)
             output_metadata_path = chunk_path / metadata_file_name
-            _save_metadata(output_metadata_path, metadata)
+            _payload_write(output_metadata_path, _metadata_bytes(metadata), payload_compression)
             chunk_entry: dict[str, Any] = {
                 "chunk": chunk_name,
                 "rows": int(codes.shape[0]),
-                "activation_file": code_path.name,
+                "activation_file": code_file_name,
                 "codes_sha256": _digest(codes),
                 "metadata_file": metadata_file_name,
                 "metadata_sha256": _metadata_digest(metadata),
             }
             stored_bytes = code_path.stat().st_size + output_metadata_path.stat().st_size
             if exception_rows:
-                exception_path = chunk_path / EXCEPTIONS_FILE
+                exception_file_name = _payload_filename(EXCEPTIONS_FILE, payload_compression)
+                exception_path = chunk_path / exception_file_name
                 order = np.argsort(np.concatenate(exception_rows))
                 exc_rows = np.concatenate(exception_rows)[order]
                 exc_dims = np.concatenate(exception_dims)[order]
                 exc_bits = np.concatenate(exception_bits)[order]
-                with exception_path.open("wb") as output:
-                    np.savez(output, rows=exc_rows, dims=exc_dims, bits=exc_bits)
+                exception_buffer = io.BytesIO()
+                np.savez(exception_buffer, rows=exc_rows, dims=exc_dims, bits=exc_bits)
+                _payload_write(exception_path, exception_buffer.getvalue(), payload_compression)
                 exception_size = exception_path.stat().st_size
                 exception_bytes_total += exception_size
                 stored_bytes += exception_size
-                chunk_entry["exceptions_file"] = EXCEPTIONS_FILE
+                chunk_entry["exceptions_file"] = exception_file_name
                 chunk_entry["exception_count"] = int(exc_rows.shape[0])
                 chunk_entry["exceptions_sha256"] = hashlib.sha256(exception_path.read_bytes()).hexdigest()
             chunk_entry["stored_bytes"] = stored_bytes
@@ -274,12 +333,16 @@ def compress_archive_quant8(
             "clipped_exceptions_stored": bool(store_clipped_exceptions),
             "exception_bytes_total": exception_bytes_total,
             "encode_time_s": encode_time,
+            "payload_compression": payload_compression,
             "chunks": chunks,
         }
         if granularity == "layer_site_dim":
-            parameters_path = temporary_path / PARAMETERS_FILE
-            _save_parameters(parameters_path, groups)
-            index["parameters_file"] = PARAMETERS_FILE
+            parameters_file_name = _payload_filename(PARAMETERS_FILE, payload_compression)
+            parameters_path = temporary_path / parameters_file_name
+            parameters_buffer = io.BytesIO()
+            _save_parameters(parameters_buffer, groups)
+            _payload_write(parameters_path, parameters_buffer.getvalue(), payload_compression)
+            index["parameters_file"] = parameters_file_name
             index["parameters_sha256"] = hashlib.sha256(parameters_path.read_bytes()).hexdigest()
             index["parameter_bytes"] = parameters_path.stat().st_size
         else:
@@ -310,9 +373,12 @@ class QuantizedActivationArchive:
             raise ValueError("Unsupported Quant8 archive format or version")
         if self.index.get("compression") not in QUANT8_CODECS.values():
             raise ValueError("Unsupported Quant8 archive codec")
+        self.payload_compression = self.index.get("payload_compression", "none")
+        if self.payload_compression not in PAYLOAD_COMPRESSIONS:
+            raise ValueError(f"Unsupported payload_compression: {self.payload_compression}")
         self.granularity = self.index.get("scale_granularity", "global")
         if "parameters_file" in self.index:
-            groups = _load_parameters(self.path / self.index["parameters_file"])
+            groups = _load_parameters(self.path / self.index["parameters_file"], self.payload_compression)
         else:
             # Archives written before per-group scales store one top-level minimum and scale.
             stored_groups = self.index.get("groups") or {
@@ -327,6 +393,17 @@ class QuantizedActivationArchive:
             for key, group in groups.items()
         }
 
+    def _load_npz(self, path: Path) -> dict[str, np.ndarray]:
+        source = io.BytesIO(_payload_read_bytes(path, self.payload_compression)) if self.payload_compression != "none" else path
+        with np.load(source, allow_pickle=False) as stored:
+            return {name: stored[name] for name in stored.files}
+
+    def _load_codes(self, path: Path) -> np.ndarray:
+        if self.payload_compression == "none":
+            return np.load(path, mmap_mode="r", allow_pickle=False)
+        buffer = io.BytesIO(_payload_read_bytes(path, self.payload_compression))
+        return np.load(buffer, allow_pickle=False)
+
     def iter_chunks(self, **query):
         token_start = query.get("token_start")
         token_stop = query.get("token_stop")
@@ -336,8 +413,8 @@ class QuantizedActivationArchive:
             raise ValueError("token range must satisfy 0 <= token_start < token_stop")
         for chunk in self.index["chunks"]:
             chunk_path = self.path / chunk["chunk"]
-            with np.load(chunk_path / chunk["metadata_file"], allow_pickle=False) as stored:
-                metadata = {name: stored[name] for name in METADATA_COLUMNS}
+            stored_metadata = self._load_npz(chunk_path / chunk["metadata_file"])
+            metadata = {name: stored_metadata[name] for name in METADATA_COLUMNS}
             mask = np.ones(int(chunk["rows"]), dtype=bool)
             if query.get("round_index") is not None:
                 mask &= metadata["round"] == query["round_index"]
@@ -350,15 +427,15 @@ class QuantizedActivationArchive:
                 mask &= metadata["activation_site"] == query["activation_site"]
             if not mask.any():
                 continue
-            codes = np.load(chunk_path / chunk["activation_file"], mmap_mode="r", allow_pickle=False)
+            codes = self._load_codes(chunk_path / chunk["activation_file"])
             selected_metadata = {name: values_[mask] for name, values_ in metadata.items()}
             values = codes[mask].astype(np.float32)
             for key, rows in _group_rows(self.granularity, selected_metadata):
                 group = self.groups[key]
                 values[rows] = values[rows] * group["scale"] + group["minimum"]
             if "exceptions_file" in chunk:
-                with np.load(chunk_path / chunk["exceptions_file"], allow_pickle=False) as stored:
-                    exc_rows, exc_dims, exc_bits = stored["rows"], stored["dims"], stored["bits"]
+                stored = self._load_npz(chunk_path / chunk["exceptions_file"])
+                exc_rows, exc_dims, exc_bits = stored["rows"], stored["dims"], stored["bits"]
                 keep = mask[exc_rows]
                 if keep.any():
                     positions = np.cumsum(mask) - 1
@@ -387,9 +464,8 @@ class QuantizedActivationArchive:
         row_count = 0
         for chunk in self.index["chunks"]:
             chunk_path = self.path / chunk["chunk"]
-            codes = np.load(chunk_path / chunk["activation_file"], mmap_mode="r", allow_pickle=False)
-            with np.load(chunk_path / chunk["metadata_file"], allow_pickle=False) as stored:
-                metadata = {name: stored[name] for name in METADATA_COLUMNS}
+            codes = self._load_codes(chunk_path / chunk["activation_file"])
+            metadata = {name: values for name, values in self._load_npz(chunk_path / chunk["metadata_file"]).items() if name in METADATA_COLUMNS}
             if codes.shape != (int(chunk["rows"]), int(self.index["dimensions"])) or codes.dtype != np.uint8:
                 raise ValueError(f"Invalid Quant8 code array in {chunk_path}")
             if _digest(codes) != chunk["codes_sha256"]:
@@ -400,9 +476,9 @@ class QuantizedActivationArchive:
                 exceptions_path = chunk_path / chunk["exceptions_file"]
                 if hashlib.sha256(exceptions_path.read_bytes()).hexdigest() != chunk["exceptions_sha256"]:
                     raise ValueError(f"Quant8 exceptions checksum mismatch in {chunk_path}")
-                with np.load(exceptions_path, allow_pickle=False) as stored:
-                    if stored["rows"].shape[0] != int(chunk["exception_count"]):
-                        raise ValueError(f"Quant8 exception count mismatch in {chunk_path}")
+                exceptions = self._load_npz(exceptions_path)
+                if exceptions["rows"].shape[0] != int(chunk["exception_count"]):
+                    raise ValueError(f"Quant8 exception count mismatch in {chunk_path}")
             row_count += int(chunk["rows"])
         if row_count != int(self.index["rows"]):
             raise ValueError("Quant8 archive row count does not match its index")

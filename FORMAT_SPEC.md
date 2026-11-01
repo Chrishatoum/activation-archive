@@ -79,6 +79,8 @@ Version 6 additionally has `"compression": "zstd"` and `"compression_level": <in
 
 Plus, at the archive root: `index.json`, and (only for `layer_site_dim` granularity) `parameters.npz`.
 
+**Optional payload compression (2026-11-01, opt-in, not the default).** If built with `payload_compression="zstd"`, every one of the files above (`codes.npy`, `metadata.npz`, `exceptions.npz`, `parameters.npz`) is written as a raw zstd frame of that file's normal bytes, and gets a `.zst` suffix (`codes.npy.zst`, etc.) — the `index.json` `"*_file"` fields always hold the real on-disk filename, so a reader never has to guess. This is a second, independent, fully lossless layer on top of Quant8's own lossy quantization: it compresses the already-quantized bytes, so it changes size and read CPU cost only, never any fidelity metric. Measured on the three evaluation row groups: ~12–13% smaller, +31% full-archive read time (182.6 ms → 239.8 ms, same machine/session). Default is `"none"` (every existing archive and script call is unaffected); not applied to any of the project's shipped archives, since the read-speed cost is a real tradeoff against this project's "fast reads" result, not a strict win.
+
 **Affine quantization.** A *group* is either "all rows" (`global` granularity), or all rows sharing a `(layer, activation_site)` pair (`layer_site`), or further split per output dimension within that pair (`layer_site_dim`). Each group has a `minimum` and `scale` (float32, rounded before use so encode/decode agree exactly): `code = round((value - minimum) / scale)`, clipped to `[0, 255]`; decode: `value = code * scale + minimum`. Parameters are fit either in-sample (on the archive's own data) or held-out (on separate calibration archives, which must not include the source game — enforced at build time).
 
 **index.json fields beyond the shared set:**
@@ -98,6 +100,7 @@ Plus, at the archive root: `index.json`, and (only for `layer_site_dim` granular
   "clipped_fraction": 0.0,
   "clipped_exceptions_stored": false,
   "exception_bytes_total": 0,
+  "payload_compression": "none | zstd",
   "groups": {"<key>": {"minimum": 0.0, "scale": 0.0}},
   "chunks": [{"chunk": "chunk-00000000", "rows": 1024, "activation_file": "codes.npy", "codes_sha256": "...", "metadata_file": "metadata.npz", "metadata_sha256": "...", "stored_bytes": 0, "exceptions_file": "exceptions.npz", "exception_count": 0, "exceptions_sha256": "..."}]
 }
@@ -106,7 +109,7 @@ Plus, at the archive root: `index.json`, and (only for `layer_site_dim` granular
 
 **Reading:** `QuantizedActivationArchive(path)` exposes the same `.read()`/`.iter_chunks()`/`.verify()` interface as the reference reader. Exceptions (if present) overwrite their exact (row, dim) positions with the original BF16 value after dequantization, so a clipped value's contribution to every fidelity metric becomes zero rather than the clipped error.
 
-**Writing:** `compress_archive_quant8(source_path, destination_path, chunk_rows=None, granularity="global", calibration_paths=None, store_clipped_exceptions=False)`.
+**Writing:** `compress_archive_quant8(source_path, destination_path, chunk_rows=None, granularity="global", calibration_paths=None, store_clipped_exceptions=False, exception_margin=0.0, payload_compression="none")`. `exception_margin` (2026-11-01, opt-in) only stores an exception for a clip landing more than that many code-units past `[0, 255]`; the default `0.0` stores every clip, matching the original behavior.
 
 ## 3. Codec archive (version 4)
 

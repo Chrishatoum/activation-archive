@@ -36,6 +36,18 @@ def main() -> None:
         action="store_true",
         help="Store exact BF16 bits for every clipped value in a sparse per-chunk exception table",
     )
+    parser.add_argument(
+        "--exception-margin",
+        type=float,
+        default=0.0,
+        help="Only store an exception for clips further than this many code-units past [0, 255] (default: store every clip)",
+    )
+    parser.add_argument(
+        "--payload-compression",
+        choices=["none", "zstd"],
+        default="none",
+        help="Wrap every stored .npy/.npz file in zstd (lossless; shrinks the archive further, costs a bit of read time)",
+    )
     args = parser.parse_args()
     result = compress_archive_quant8(
         args.source,
@@ -43,6 +55,8 @@ def main() -> None:
         granularity=args.granularity,
         calibration_paths=args.calibration,
         store_clipped_exceptions=args.store_clipped_exceptions,
+        exception_margin=args.exception_margin,
+        payload_compression=args.payload_compression,
     )
     print(json.dumps(result, indent=2))
     print(f"archive_path: {args.destination}")
