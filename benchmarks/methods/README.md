@@ -2,14 +2,15 @@
 
 This directory contains one benchmark script per compression strategy.
 
-Current placeholders:
+Implemented:
 - raw_baseline.py
 - zstd_lossless.py
 - quant8.py
-- quant4.py
-- block_scale.py
-- zfp.py
-- sz3.py
+
+`quant4.py`, `block_scale.py`, `zfp.py`, and `sz3.py` were removed
+(2026-11-03): they were never implemented past a `NotImplementedError`
+stub, and ZFP/SZ3/blockwise scaling ended up implemented directly in
+`python/codec_archive.py` instead (see FORMAT_SPEC.md's codec table).
 
 Each script should:
 1. load the same row group from the same game,
